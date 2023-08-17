@@ -163,3 +163,81 @@ DELETE from courses
 WHERE course_id = 5;
 
 SELECT * from courses;
+
+
+
+
+
+
+-- Select Basics
+CREATE TABLE if NOT EXISTS departments (
+  deptId SERIAL PRIMARY KEY,
+  name TEXT not null
+);
+
+INSERT INTO departments VALUES(5,'Sales');
+
+CREATE TABLE if NOT EXISTS employees2 (
+    empId SERIAL PRIMARY KEY,
+    name TEXT not null,
+    email text not  null,
+    salary INTEGER not null,
+    joining_date DATE NOT null,
+    deptId INTEGER not null,
+    CONSTRAINT fk_deptId 
+        FOREIGN KEY(deptId)
+        REFERENCES departments(deptId)
+)
+
+-- Insert data into employees table
+INSERT INTO employees2 (name, email, salary, joining_date, deptId)
+VALUES
+  ('John Doe', 'john@example.com', 50000, '2023-08-17', 1),
+  ('Jane Smith', 'jane@example.com', 55000, '2023-08-18', 2),
+  ('Michael Johnson', 'michael@example.com', 60000, '2023-08-19', 3),
+  ('Emily Brown', 'emily@example.com', 52000, '2023-08-20', 4),
+  ('William Jones', 'william@example.com', 58000, '2023-08-21', 5),
+  ('Olivia Davis', 'olivia@example.com', 53000, '2023-08-22', 1),
+  ('James Wilson', 'james@example.com', 56000, '2023-08-23', 2),
+  ('Sophia Taylor', 'sophia@example.com', 59000, '2023-08-24', 3),
+  ('Liam Anderson', 'liam@example.com', 54000, '2023-08-25', 4),
+  ('Emma Martinez', 'emma@example.com', 57000, '2023-08-26', 5);
+
+
+-- select all fields/rows
+SELECT * from departments;
+SELECT * from employees;
+
+-- select some column 
+SELECT name,email from employees2;
+
+-- select with condition 
+SELECT * from employees2
+WHERE salary > 52000;
+
+SELECT * from employees2
+WHERE joining_date < '2023-08-24'
+
+-- select that not equal to 
+SELECT * from employees2
+WHERE name <> 'John Doe'
+
+CREATE Table employees23 (
+  emp_id SERIAL PRIMARY KEY,
+  emp_name VARCHAR(100),
+  emp_department VARCHAR(50),
+  emp_salary DECIMAL(10,2),
+  emp_hire_date DATE
+);
+
+-- Insert data into employees table
+INSERT INTO employees23 (emp_name, emp_department, emp_salary, emp_hire_date)
+VALUES
+  ('John Doe', 'Sales', 50000.00, '2023-08-17'),
+  ('Jane Smith', 'Marketing', 55000.00, '2023-08-18'),
+  ('Michael Johnson', 'Finance', 60000.00, '2023-08-19'),
+  ('Emily Brown', 'HR', 52000.00, '2023-08-20'),
+  ('William Jones', 'IT', 58000.00, '2023-08-21');
+
+-- SELECT with no duplicate value 
+SELECT DISTINCT emp_department from employees23
