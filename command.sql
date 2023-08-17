@@ -175,7 +175,7 @@ CREATE TABLE if NOT EXISTS departments (
   name TEXT not null
 );
 
-INSERT INTO departments VALUES(5,'Sales');
+INSERT INTO departments VALUES(4,'New');
 
 CREATE TABLE if NOT EXISTS employees2 (
     empId SERIAL PRIMARY KEY,
@@ -206,38 +206,146 @@ VALUES
 
 -- select all fields/rows
 SELECT * from departments;
-SELECT * from employees;
+SELECT * from employees2;
 
--- select some column 
-SELECT name,email from employees2;
 
--- select with condition 
+-- Limit And Offset
+SELECT * FROM employees2
+ORDER BY name
+ASC LIMIT 5 OFFSET 2
+
+-- highest salary of the table 
 SELECT * from employees2
-WHERE salary > 52000;
+ORDER BY salary 
+DESC LIMIT 1;
 
+-- third highest salary of the table 
 SELECT * from employees2
-WHERE joining_date < '2023-08-24'
+ORDER BY salary 
+DESC LIMIT 1 OFFSET 2;
 
--- select that not equal to 
-SELECT * from employees2
-WHERE name <> 'John Doe'
+-- other way 
+SELECT max(salary)  as highest_salary
+from employees2
 
-CREATE Table employees23 (
-  emp_id SERIAL PRIMARY KEY,
-  emp_name VARCHAR(100),
-  emp_department VARCHAR(50),
-  emp_salary DECIMAL(10,2),
-  emp_hire_date DATE
+-- IN, NOT IN ,BETWEEN, LIKE, IS
+-- IN
+SELECT * FROM employees2 
+WHERE empid IN (1,3,5);
+
+-- Not In
+SELECT * FROM employees2 
+WHERE empid NOT IN (1,3,5);
+
+-- Between
+SELECT * FROM employees2 
+WHERE salary BETWEEN 52000 and 55000;
+
+-- Like(searching in string) && Case sensative
+SELECT * FROM employees2 
+WHERE name LIKE '%a%';
+
+-- first char as a 
+SELECT * FROM employees2 
+WHERE name LIKE 'J%';
+
+-- last char as a 
+SELECT * FROM employees2 
+WHERE name LIKE '%h';
+
+-- specific position(here 2nd)
+SELECT * FROM employees2 
+WHERE name LIKE '_r%';
+
+-- specific position(Frist 2 character then r and last e two character)
+SELECT * FROM employees2 
+WHERE name LIKE '__r__';
+
+-- specific position(start with a and end with o)
+SELECT * FROM employees2 
+WHERE name LIKE 'a%o';
+
+SELECT * FROM employees2 
+WHERE deptid is NULL;
+
+
+
+
+
+
+-- Active: 1692246012307@@127.0.0.1@5432@postgres@public
+
+-- joining 
+CREATE TABLE department2 (
+  department_id INT PRIMARY KEY,
+  department_name VARCHAR(100)
 );
+-- Insert data into department2 table
 
--- Insert data into employees table
-INSERT INTO employees23 (emp_name, emp_department, emp_salary, emp_hire_date)
-VALUES
-  ('John Doe', 'Sales', 50000.00, '2023-08-17'),
-  ('Jane Smith', 'Marketing', 55000.00, '2023-08-18'),
-  ('Michael Johnson', 'Finance', 60000.00, '2023-08-19'),
-  ('Emily Brown', 'HR', 52000.00, '2023-08-20'),
-  ('William Jones', 'IT', 58000.00, '2023-08-21');
+DROP Table department2;
 
--- SELECT with no duplicate value 
-SELECT DISTINCT emp_department from employees23
+
+CREATE TABLE employees3 (
+  employee_id INT PRIMARY KEY,
+  full_name VARCHAR(100),
+  department_id INT,
+  job_role VARCHAR(100),
+  manager_id INT,
+  FOREIGN KEY (department_id) REFERENCES department2(department_id)
+)
+
+
+
+SELECT * from department2;
+SELECT * from employees3
+
+-- Inner Join 
+SELECT *
+from employees3
+INNER JOIN department2 on department2.department_id = employees3.department_id;
+
+-- LEFT JOIN 
+SELECT *
+from employees3
+LEFT JOIN department2 on department2.department_id = employees3.department_id;
+
+-- RIGHT JOIN 
+SELECT *
+from employees3
+RIGHT JOIN department2 on department2.department_id = employees3.department_id;
+
+--  FULL JOIN 
+SELECT *
+from employees3
+FULL JOIN department2 on department2.department_id = employees3.department_id;
+
+
+--  NATURAL JOIN 
+SELECT *
+from employees3
+NATURAL JOIN department2;
+
+
+--  CROSS JOIN 
+SELECT *
+from employees3
+CROSS JOIN department2;
+
+
+-- AGGREGATE FUNCTION 
+SELECT AVG(salary) averageSalary FROM employees2;
+SELECT MIN(salary) averageSalary FROM employees2;
+SELECT max(salary) averageSalary FROM employees2;
+
+-- avg of every department 
+SELECT deptid,AVG(salary) from employees2 GROUP BY deptid;
+
+
+-- for example(with some inappropieate)
+-- SELECT d.name,AVG(e.salary), max(e.salary) FROM employees2 e
+-- FULL JOIN department2 d on e.deptId = d.dept
+-- GROUP BY d.name Having avg(e.salary) > 52000
+
+-- SELECT d.name,SUM(e.salary), min(e.salary), count(*) FROM employees2 e
+-- FULL JOIN employees2 e on e.deptId = d.dept
+-- GROUP BY d.deptId
